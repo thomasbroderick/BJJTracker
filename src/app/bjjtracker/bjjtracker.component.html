@@ -1,0 +1,99 @@
+<h1>{{title}}</h1>
+<!-- Main Table -->
+<div name='roundIndex' *ngIf='!selected'>
+  <table class="table">
+    <thead class="thead-light">
+      <th>Name</th>
+      <th>Rank</th>
+      <th>Date</th>
+      <th>Points Scored</th>
+      <th>Result</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <tr *ngFor='let round of rounds'>
+        <td (click)='displayRound(round)'>{{round.opponentName}}</td>
+        <td>{{round.opponentRank}}</td>
+        <td>{{round.date | date:'shortDate'}} </td>
+        <td>{{round.pointsScored}}</td>
+        <td>{{round.result}}</td>
+        <button class="btn btn-danger" (click)='deleteRound(round.id)'>X</button>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+</div>
+<!-- Round Details Div -->
+<div>
+  <div *ngIf='selected && !editRound'>
+    <h2>Round Details</h2>
+    <ul>
+      <li>Opponent Name: {{selected.opponentName}}</li>
+      <li>Opponent Rank: {{selected.opponentRank}}</li>
+      <li>Date: {{selected.date | date:'shortDate'}}</li>
+      <li>Points Scored: {{selected.pointsScored}}</li>
+      <li>Result: {{selected.result}}</li>
+    </ul>
+
+    <button (click)='setEditRound()'>Edit</button>
+    <button (click)='selected = null'>Back</button>
+  </div>
+</div>
+<!-- Edit Round Details Div -->
+<form name="editForm" *ngIf='editRound'>
+  <input type="text" name="opponentName" [(ngModel)]="editRound.opponentName">
+  <input type="text" name="opponentRank" [(ngModel)]="editRound.opponentRank">
+  <input type="date" name="date" [(ngModel)]="editRound.date">
+  <input type="number" name="pointsScored" [(ngModel)]="editRound.pointsScored">
+  <input type="text" name="result" [(ngModel)]="editRound.result">
+  <button (click)="editRound = null">Cancel</button>
+  <button (click)="updateRound(editRound)">Save</button>
+</form>
+<!-- Add New Round Form -->
+<div *ngIf='!selected'>
+  <h2>Enter a New Round</h2>
+  <form>
+    Opponent Name:
+    <input type="text" name="opponentName" [(ngModel)]="newRound.opponentName">
+    <br> Rank:
+    <select name="opponentRank" [(ngModel)]="newRound.opponentRank">
+      <option>White</option>
+      <option>Blue</option>
+      <option>Purple</option>
+      <option>Brown</option>
+      <option>Black</option>
+    </select>
+    <br> Date:
+    <input type="date" name="date" [(ngModel)]="newRound.date">
+    <br> Points Scored:
+    <input type="number" name="pointsScored" [(ngModel)]="newRound.pointsScored">
+    <br> Result:
+    <select name="result" [(ngModel)]="newRound.result">
+      <option>Win</option>
+      <option>Draw</option>
+      <option>Loss</option>
+    </select>
+    <br>
+    <input type="submit" name="submit" (click)="addRound(newRound)">
+    <br>
+  </form>
+  <hr>
+</div>
+<!-- Data Analysis Div -->
+<div *ngIf='!selected'>
+  <h2>Data Analysis</h2>
+  <table class="table">
+    <thead>
+      <th>Total Rounds</th>
+      <th>Average Points Scored</th>
+      <th>Win %</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{getNumOfRounds()}}</td>
+        <td>{{getTotalPoints()/getNumOfRounds() | number:'1.1-2'}}</td>
+        <td>{{getTotalWins()/getNumOfRounds()*100}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
